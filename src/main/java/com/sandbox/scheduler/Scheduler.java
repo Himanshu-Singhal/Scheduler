@@ -1,7 +1,11 @@
 package com.sandbox.scheduler;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.sandbox.scheduler.model.Task;
 
@@ -9,28 +13,23 @@ public class Scheduler {
 
     static List<Task> scheduled = new ArrayList<>();
 
+    static SortedMap<Task, Task> map = new TreeMap<>(new SortAscendingComparator());
+
     public static void scheduleTask(Task taskToAdd) {
-        if (scheduled.isEmpty()) {
-            scheduled.add(taskToAdd);
-            return;
-        } else {
-            for (int i = 0; i < scheduled.size(); i++) {
-
-                if (taskToAdd.compareTo(scheduled.get(i)) == 1) {
-                    scheduled.add(i, taskToAdd);
-                    return;
-                }
-            }
-            // if it has the lowest priority added it as the last element in the list
-            scheduled.add(taskToAdd);
-        }
-
+        map.put(taskToAdd, taskToAdd);
     }
 
     public static void printSchedule() {
-        for (Task task : scheduled) {
+        for (Entry<Task, Task> entry : map.entrySet()) {
+            Task task = entry.getKey();
             System.out.println(task.toString());
         }
     }
+}
 
+class SortAscendingComparator implements Comparator<Task> {
+    @Override
+    public int compare(Task taskAdded, Task taskScheduled) {
+        return taskScheduled.compareTo(taskAdded);
+    }
 }

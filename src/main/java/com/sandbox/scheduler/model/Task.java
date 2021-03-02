@@ -2,7 +2,7 @@ package com.sandbox.scheduler.model;
 
 import java.time.LocalDateTime;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
 	public int urgency = -1;
 	public Category category;
@@ -18,34 +18,35 @@ public class Task {
 	}
 
 	/*
-	 * returns 1 if (this) has higher priority than the task in the parameter return
-	 * -1 if task (the parameter) has higher priority than the task (this)
+	 * returns 1 if (the new task to be scheduled) has higher priority than the task
+	 * already in the scheduled list (task) -1 if task (the parameter) has higher
+	 * priority than the task (this)
 	 */
-
-	public int compareTo(Task task) {
-		if (urgency < task.urgency) {
+	@Override
+	public int compareTo(Task taskScheduled) {
+		if (urgency < taskScheduled.urgency) {
 			return 1;
-		} else if (urgency > task.urgency) {
+		} else if (urgency > taskScheduled.urgency) {
 			return -1;
-		} else if (urgency == task.urgency) {
-			return compareCategory(task);
+		} else if (urgency == taskScheduled.urgency) {
+			return compareCategory(taskScheduled);
 		}
 		return 0;
 	}
 
-	private int compareCategory(Task task) {
+	private int compareCategory(Task taskScheduled) {
 		if (category.equals(Category.RED)
-				&& (task.category.equals(Category.BLUE) || task.category.equals(Category.GREEN))) {
+				&& (taskScheduled.category.equals(Category.BLUE) || taskScheduled.category.equals(Category.GREEN))) {
 			return 1;
-		} else if (task.category.equals(Category.RED)
+		} else if (taskScheduled.category.equals(Category.RED)
 				&& (category.equals(Category.BLUE) || category.equals(Category.GREEN))) {
 			return -1;
-		} else if (category.equals(Category.BLUE) && task.category.equals(Category.GREEN)) {
+		} else if (category.equals(Category.BLUE) && taskScheduled.category.equals(Category.GREEN)) {
 			return 1;
-		} else if (task.category.equals(Category.BLUE) && category.equals(Category.GREEN)) {
+		} else if (taskScheduled.category.equals(Category.BLUE) && category.equals(Category.GREEN)) {
 			return -1;
-		} else if (this.category.equals(task.category)) {
-			return compareTimeStamp(task);
+		} else if (this.category.equals(taskScheduled.category)) {
+			return compareTimeStamp(taskScheduled);
 		}
 
 		return 0;
@@ -58,5 +59,4 @@ public class Task {
 			return -1;
 		}
 	}
-
 }
